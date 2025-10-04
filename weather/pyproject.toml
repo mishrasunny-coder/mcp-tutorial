@@ -8,3 +8,12 @@ dependencies = [
     "httpx>=0.28.1",
     "mcp[cli]>=1.15.0",
 ]
+
+[tool.setuptools]
+py-modules = ["weather"]
+
+[tool.uv]
+package = true
+
+[project.scripts]
+weather = "weather:main"

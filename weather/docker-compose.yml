@@ -1,0 +1,15 @@
+version: '3.8'
+
+services:
+  weather-mcp:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: weather-mcp:latest
+    container_name: weather-mcp-server
+    stdin_open: true
+    tty: true
+    environment:
+      - PYTHONUNBUFFERED=1
+    # MCP servers use stdio, no port mapping needed
+

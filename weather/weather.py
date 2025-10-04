@@ -97,6 +97,30 @@ Forecast: {period['detailedForecast']}
 
     return "\n---\n".join(forecasts)
 
+@mcp.tool()
+async def get_timezone(latitude: float, longitude: float) -> str:
+    """Get timezone information for a location using NWS API.
+
+    Args:
+        latitude: Latitude of the location
+        longitude: Longitude of the location
+    """
+    points_url = f"{NWS_API_BASE}/points/{latitude},{longitude}"
+    points_data = await make_nws_request(points_url)
+
+    if not points_data:
+        return "Unable to fetch location data."
+
+    properties = points_data.get("properties")
+    if not properties:
+        return "Unable to fetch location data."
+    
+    timezone = properties.get('timeZone', 'Unknown')
+    city = properties.get('relativeLocation', {}).get('properties', {}).get('city', 'Unknown')
+    state = properties.get('relativeLocation', {}).get('properties', {}).get('state', 'Unknown')
+    
+    return f"Location: {city}, {state}\nTimezone: {timezone}"
+
 def main():
     # Initialize and run the server
     mcp.run(transport='stdio')

@@ -69,14 +69,22 @@ async def get_forecast(latitude: float, longitude: float) -> str:
         return "Unable to fetch forecast data for this location."
 
     # Get the forecast URL from the points response
-    forecast_url = points_data["properties"]["forecast"]
+    properties = points_data.get("properties")
+    if not properties or "forecast" not in properties:
+        return "Unable to fetch forecast data for this location."
+    
+    forecast_url = properties["forecast"]
     forecast_data = await make_nws_request(forecast_url)
 
     if not forecast_data:
         return "Unable to fetch detailed forecast."
 
-    # Format the periods into a readable forecast
-    periods = forecast_data["properties"]["periods"]
+    # Get the periods from the forecast response
+    properties = forecast_data.get("properties")
+    if not properties or "periods" not in properties:
+        return "Unable to fetch detailed forecast."
+    
+    periods = properties["periods"]
     forecasts = []
     for period in periods[:5]:  # Only show next 5 periods
         forecast = f"""
